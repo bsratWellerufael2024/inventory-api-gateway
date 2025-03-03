@@ -22,6 +22,6 @@ export class ProductDto {
    selling_price:number
 
   @IsNumber()
-  categoryId: number;
+  category: string;
 
 }

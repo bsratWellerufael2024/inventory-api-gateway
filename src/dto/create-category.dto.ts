@@ -1,7 +1,7 @@
 import { IsNumber,IsString } from "@nestjs/class-validator";
 export class CategoryDto {
   @IsString()
-  name: string;
+  category: string;
   @IsString()
   description:string
 }
