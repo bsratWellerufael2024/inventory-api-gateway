@@ -1,24 +1,30 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
-import { Options } from '@nestjs/common';
+import { DocumentBuilder } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
- const app = await NestFactory.create(AppModule);
- app.connectMicroservice({
-   transport: Transport.REDIS,
-   options: {
-     host: '127.0.0.1',
-     port: 6379,
-     queue: 'users-service',
-   },
+  const app = await NestFactory.create(AppModule);
+  const config = new DocumentBuilder()
+    .setTitle('Product Microservice API')
+    .setDescription('API documentation for the Product Microservice')
+    .setVersion('1.0')
+    .addBearerAuth() // For JWT authentication (optional)
+    .build();
 
- },
- 
-);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document); // Swagger UI available at /api/docs
+  app.connectMicroservice({
+    transport: Transport.REDIS,
+    options: {
+      host: '127.0.0.1',
+      port: 6379,
+      queue: 'users-service',
+    },
+  });
 
- await app.startAllMicroservices();
- await app.listen(3000);
- console.log('🚀 API Gateway running on http://localhost:3000');
-
+  await app.startAllMicroservices();
+  await app.listen(3000);
+  console.log('🚀 API Gateway running on http://localhost:3000');
 }
 bootstrap();

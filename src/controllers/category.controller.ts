@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post,Put} from "@nestjs/common";
 import { ClientProxy,Client,Transport } from "@nestjs/microservices";
 import { Inject } from "@nestjs/common";
 import { CategoryDto } from "src/dto/create-category.dto";
@@ -27,8 +27,16 @@ export class CategoryController {
   async fetchCategories(): Promise<string[]> {
     return this.client.send<string[]>('get_all_categories', {}).toPromise();
   }
-  @Delete()
-  async deleteCategory(categoryId: number): Promise<{ message: string }> {
+
+  @Put(':id')
+  async updateCategory(@Param('id') id: number, @Body('category') category: string) {
+    return this.client.send('update_category', { id, category });
+  }
+
+  @Delete(':categoryId')
+  async deleteCategory(
+    @Param('categoryId') categoryId: number,
+  ): Promise<{ message: string }> {
     return this.client
       .send<{ message: string }>('delete_category', categoryId)
       .toPromise();
