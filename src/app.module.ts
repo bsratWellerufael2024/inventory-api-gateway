@@ -7,6 +7,7 @@ import { ProductController } from './controllers/product.controller';
 import { CategoryController } from './controllers/category.controller';
 import { UnitConversionController } from './controllers/unitConversion.controller';
 import { ProductControllerVariant } from './controllers/variant.controller';
+import { InventoryController } from './controllers/inventory.controller';
 @Module({
   imports: [
     ClientsModule.register([
@@ -28,7 +29,7 @@ import { ProductControllerVariant } from './controllers/variant.controller';
       },
     ]),
   ],
-  controllers: [AppController, UsersController,ProductController,CategoryController,UnitConversionController,ProductControllerVariant],
+  controllers: [AppController, UsersController,ProductController,CategoryController,UnitConversionController,ProductControllerVariant,InventoryController],
   providers: [AppService],
 })
 export class AppModule {}

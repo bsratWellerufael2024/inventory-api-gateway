@@ -8,7 +8,7 @@ import { UpdateProductDto } from "src/dto/update-product.dto";
 @Controller('product')
 export class ProductController {
   constructor(
-    @Inject('PRODUCT_SERVICE') private readonly usersService: ClientProxy,
+    @Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy,
   ) {}
   @Client({
     transport: Transport.REDIS,
