@@ -37,7 +37,7 @@ export class UsersController {
     };
     return this.client.send('login', payload);
   }
-
+  
   @Get('/all-users')
   async getAllUsers(@Req() request) {
     const token = request.headers.authorization?.split(' ')[1]; 

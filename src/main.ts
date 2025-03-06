@@ -5,6 +5,12 @@ import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // Enable CORS
+  app.enableCors({
+    origin: '*', // Allow all origins (change this to your frontend domain for security)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
   const config = new DocumentBuilder()
     .setTitle('Product Microservice API')
     .setDescription('API documentation for the Product Microservice')
