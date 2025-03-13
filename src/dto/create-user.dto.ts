@@ -5,6 +5,9 @@ export class CreateUserDTO {
   id: number;
 
   @IsString()
+  token:string
+  
+  @IsString()
   @IsNotEmpty()
   fname: string;
 

@@ -1,4 +1,4 @@
-import { Body, Controller,Get, Post,Param,Query ,Delete,Patch} from "@nestjs/common";
+import { Body, Controller,Get, Post,Param,Query ,Delete,Patch, Req} from "@nestjs/common";
 import { Inject } from "@nestjs/common";
 import { Client,Transport,ClientProxy } from "@nestjs/microservices";
 import { ProductDto } from "src/dto/create-product.dto";
@@ -32,9 +32,10 @@ export class ProductController {
     };
     return this.client.send('product-created', productData);
   }
+
   @Get('/all-product')
-  async getAllProduct() {
-    return this.client.send('get-all-product', {});
+  async getAllProduct(@Req()req) {
+    return this.client.send('get-all-product', {user:req.user});
   }
 
   @Get()

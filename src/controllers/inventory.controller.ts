@@ -21,8 +21,8 @@ export class InventoryController {
      return this.client.send('movement_recorded',dto) 
   }
 
-  @Get('/summary')
-  async inventorySummary(){
-    return this.client.send('get.products.by.ids', {});
+ @Get('/summary')
+  async getInventorySummary() {
+    return this.client.send('inventory.getSummary', {})
   }
 }

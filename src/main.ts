@@ -5,9 +5,8 @@ import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // Enable CORS
   app.enableCors({
-    origin: '*', // Allow all origins (change this to your frontend domain for security)
+    origin: '*', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
   });
@@ -15,7 +14,7 @@ async function bootstrap() {
     .setTitle('Product Microservice API')
     .setDescription('API documentation for the Product Microservice')
     .setVersion('1.0')
-    .addBearerAuth() // For JWT authentication (optional)
+    .addBearerAuth() 
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
