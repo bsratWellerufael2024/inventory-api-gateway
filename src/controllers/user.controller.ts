@@ -15,6 +15,7 @@ export class UsersController {
     },
   })
   client: ClientProxy;
+  
   @Post('/auth/signup')
   async createUser(@Body() createUserDto: CreateUserDTO) {
         if(!createUserDto.token){
@@ -55,5 +56,4 @@ export class UsersController {
   return this.client.send('remove-user', +id);
  }
 
- 
 }

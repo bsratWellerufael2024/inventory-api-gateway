@@ -23,6 +23,7 @@ export class InventoryController {
 
  @Get('/summary')
   async getInventorySummary() {
+     console.log('📩 Fetching inventory summary...');
     return this.client.send('inventory.getSummary', {})
   }
 }
