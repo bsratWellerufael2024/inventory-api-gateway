@@ -2,8 +2,6 @@ import { Body, Controller,Get, Post,Param,Query ,Delete,Patch, Req} from "@nestj
 import { Inject } from "@nestjs/common";
 import { Client,Transport,ClientProxy } from "@nestjs/microservices";
 import { ProductDto } from "src/dto/create-product.dto";
-import { UsePipes,ValidationPipe } from "@nestjs/common";
-import { FilterProductsDto } from "src/dto/filter-products.dto";
 import { UpdateProductDto } from "src/dto/update-product.dto";
 @Controller('product')
 export class ProductController {
@@ -33,19 +31,16 @@ export class ProductController {
     return this.client.send('product-created', productData);
   }
 
-  @Get('/all-product')
-  async getAllProduct(@Req()req) {
-    return this.client.send('get-all-product', {user:req.user});
-  }
-
   @Get('detail/:id')
   async getProduct(@Param('id') id: number) {
     return this.client.send('get-one-product', id);
   }
+  
   @Delete('/:productName')
   async deleteProduct(@Param('productName') productName: string) {
     return this.client.send('product-deleted', productName);
   }
+
   @Patch(':id')
   async updateProduct(
     @Param('id') productId: number,
