@@ -38,11 +38,6 @@ export class ProductController {
     return this.client.send('get-all-product', {user:req.user});
   }
 
-  @Get()
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async getFilteredProducts(@Query() filterDto: FilterProductsDto) {
-    return this.client.send({ cmd: 'get_filtered_products' }, filterDto);
-  }
   @Get('detail/:id')
   async getProduct(@Param('id') id: number) {
     return this.client.send('get-one-product', id);
