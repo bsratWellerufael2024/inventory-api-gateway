@@ -1,4 +1,5 @@
-import { IsNumber,IsString } from "@nestjs/class-validator";
+import { IsNumber, IsString, IsOptional } from '@nestjs/class-validator';
+
 export class ProductDto {
   @IsNumber()
   productId: number;
@@ -16,12 +17,12 @@ export class ProductDto {
   openingQty: number;
 
   @IsNumber()
-   cost_price:number
- 
-  @IsNumber()
-   selling_price:number
+  cost_price: number;
 
   @IsNumber()
-  category: string;
+  selling_price: number;
 
+  @IsOptional() 
+  @IsNumber()
+  category?: string;
 }

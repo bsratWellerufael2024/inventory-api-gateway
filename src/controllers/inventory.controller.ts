@@ -24,7 +24,7 @@ export class InventoryController {
   async getInventorySummary(
     @Query('filter') filter?: string,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 2,
+    @Query('limit') limit: number = 10,
   ) {
     console.log('Fetching inventory summary...');
     return this.client.send('inventory.getSummary', { filter, page, limit });
