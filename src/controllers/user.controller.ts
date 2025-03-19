@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Inject,Get, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Inject,Get, Param, Delete, Patch, UseGuards } from '@nestjs/common';
 import { CreateUserDTO } from 'src/dto/create-user.dto';
 import { ClientProxy,Client,Transport } from '@nestjs/microservices';
 import { UpdateUserDto } from 'src/dto/UpdateUserDto.dto';
 import { Req,Res} from '@nestjs/common';
 import { Response } from 'express';
+import { AuthGuard } from 'src/guards/jwt-auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(
@@ -67,7 +68,7 @@ export class UsersController {
     }
   }
 
-
+   @UseGuards(AuthGuard)
   @Get('/all-users')
   async getAllUsers(@Req() request) {
     const token = request.headers.authorization?.split(' ')[1];
