@@ -9,6 +9,7 @@ async function bootstrap() {
     origin: '*', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
+    credentials:true
   });
   const config = new DocumentBuilder()
     .setTitle('Product Microservice API')
@@ -18,7 +19,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document); // Swagger UI available at /api/docs
+  SwaggerModule.setup('api/docs', app, document); 
   app.connectMicroservice({
     transport: Transport.REDIS,
     options: {
@@ -27,9 +28,10 @@ async function bootstrap() {
       queue: 'users-service',
     },
   });
-
   await app.startAllMicroservices();
   await app.listen(3000);
   console.log('🚀 API Gateway running on http://localhost:3000');
 }
 bootstrap();
+
+

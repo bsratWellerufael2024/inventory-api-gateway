@@ -8,8 +8,26 @@ import { CategoryController } from './controllers/category.controller';
 import { UnitConversionController } from './controllers/unitConversion.controller';
 import { ProductControllerVariant } from './controllers/variant.controller';
 import { InventoryController } from './controllers/inventory.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 @Module({
   imports: [
+   
+    ConfigModule.forRoot({
+      isGlobal: true, 
+    }),
+
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'), 
+        signOptions: { expiresIn: '1h' }, 
+      }),
+    }),
+
+    // Microservices setup
     ClientsModule.register([
       {
         transport: Transport.TCP,
@@ -29,7 +47,16 @@ import { InventoryController } from './controllers/inventory.controller';
       },
     ]),
   ],
-  controllers: [AppController, UsersController,ProductController,CategoryController,UnitConversionController,ProductControllerVariant,InventoryController],
+  controllers: [
+    AppController,
+    UsersController,
+    ProductController,
+    CategoryController,
+    UnitConversionController,
+    ProductControllerVariant,
+    InventoryController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}
+

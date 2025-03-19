@@ -2,7 +2,8 @@ import { Controller, Post, Body, Inject,Get, Param, Delete, Patch } from '@nestj
 import { CreateUserDTO } from 'src/dto/create-user.dto';
 import { ClientProxy,Client,Transport } from '@nestjs/microservices';
 import { UpdateUserDto } from 'src/dto/UpdateUserDto.dto';
-import { Req } from '@nestjs/common';
+import { Req,Res} from '@nestjs/common';
+import { Response } from 'express';
 @Controller('users')
 export class UsersController {
   constructor(
@@ -34,14 +35,42 @@ export class UsersController {
     return this.client.send('user-created', userData);
   }
 
-  @Post('/auth/login')
-  async login(@Body() createUserDto: CreateUserDTO) {
+@Post('/auth/login')
+  async login(@Body() createUserDto: CreateUserDTO, @Res() res: Response) {
     const payload = {
       uname: createUserDto.uname,
       password: createUserDto.password,
     };
-    return this.client.send('login', payload);
+
+    try {
+      const response = await this.client.send('login', payload).toPromise();
+      if (!response.success) {
+        return res.status(401).json(response);
+      }
+
+      // Set HTTP-Only Secure Cookie in API Gateway
+      res.cookie('jwt', response.data.accessToken, {
+        httpOnly: true, // Prevents XSS attacks
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        sameSite: 'strict', // Protects against CSRF attacks
+      });
+
+      // Return user info (without token)
+      return res.json({
+        success: true,
+        message: 'Login successful',
+        data: { uname: response.data.uname, role: response.data.role },
+      });
+    } catch (error) {
+      console.error('Login error:', error.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
+
+
 
   @Get('/all-users')
   async getAllUsers(@Req() request) {

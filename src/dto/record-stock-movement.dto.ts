@@ -17,10 +17,9 @@ export class RecordStockMovementDto {
   @IsString()
   @IsOptional()
   reason?: string;
-
+  
   @IsDate()
   movementDate: Date;
-
-  @IsInt()
-  activatedBy: number;
+  @IsString() 
+  activatedBy: string; 
 }
