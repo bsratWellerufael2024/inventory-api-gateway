@@ -7,8 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { jwtContants } from '../constants/constants';
-import { RpcException } from '@nestjs/microservices';
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -16,20 +14,16 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
   ) {}
 
-  /**
-   * Extracts token from Authorization Header (Bearer Token)
-   */
+ 
   private extractTokenFromHeader(request: any): string | null {
     const authHeader = request.headers['authorization'];
     if (authHeader?.startsWith('Bearer ')) {
-      return authHeader.split(' ')[1]; // Extract token after 'Bearer'
+      return authHeader.split(' ')[1];
     }
     return null;
   }
 
-  /**
-   * Extracts token from HTTP-Only Cookie
-   */
+
   private extractTokenFromCookie(request: any): string | null {
     return request.cookies?.jwt || null;
   }

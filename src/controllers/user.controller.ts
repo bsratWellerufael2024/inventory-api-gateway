@@ -47,15 +47,12 @@ export class UsersController {
       if (!response.success) {
         return res.status(401).json(response);
       }
-
-      // Set HTTP-Only Secure Cookie in API Gateway
       res.cookie('jwt', response.data.accessToken, {
-        httpOnly: true, // Prevents XSS attacks
+        httpOnly: true, // Prevents XSS 
         secure: process.env.NODE_ENV === 'production', // HTTPS only in production
         sameSite: 'strict', // Protects against CSRF attacks
       });
 
-      // Return user info (without token)
       return res.json({
         success: true,
         message: 'Login successful',
@@ -69,7 +66,6 @@ export class UsersController {
       });
     }
   }
-
 
 
   @Get('/all-users')
