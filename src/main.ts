@@ -3,23 +3,32 @@ import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable CORS properly for frontend
   app.enableCors({
-    origin: '*', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: 'http://localhost:5173', // Must match frontend
+    credentials: true, // Allow cookies to be sent
     allowedHeaders: 'Content-Type, Authorization',
-    credentials:true
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
+
+  // Enable cookie parsing
+  app.use(cookieParser());
+
   const config = new DocumentBuilder()
     .setTitle('Product Microservice API')
     .setDescription('API documentation for the Product Microservice')
     .setVersion('1.0')
-    .addBearerAuth() 
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document); 
+  SwaggerModule.setup('api/docs', app, document);
+
   app.connectMicroservice({
     transport: Transport.REDIS,
     options: {
@@ -28,6 +37,7 @@ async function bootstrap() {
       queue: 'users-service',
     },
   });
+
   await app.startAllMicroservices();
   await app.listen(3000);
   console.log('🚀 API Gateway running on http://localhost:3000');
