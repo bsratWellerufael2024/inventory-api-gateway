@@ -5,7 +5,7 @@ import { UpdateUserDto } from 'src/dto/UpdateUserDto.dto';
 import { Req,Res} from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from 'src/guards/jwt-auth.guard';
-import { UnauthorizedException } from '@nestjs/common';
+
 @Controller('users')
 export class UsersController {
   constructor(
@@ -36,41 +36,6 @@ export class UsersController {
     console.log('Api-gateway', userData);
     return this.client.send('user-created', userData);
   }
-
-  // @Post('/auth/login')
-  // async login(@Body() createUserDto: CreateUserDTO, @Res() res: Response) {
-  //   const payload = {
-  //     uname: createUserDto.uname,
-  //     password: createUserDto.password,
-  //   };
-
-  //   try {
-  //     const response = await this.client.send('login', payload).toPromise();
-  //     if (!response.success) {
-  //       return res.status(401).json(response);
-  //     }
-
-  //     res.cookie('access_token', response.data.accessToken, {
-  //       httpOnly: true, // Prevents XSS
-  //       secure: process.env.NODE_ENV !== 'development', // Must be true for HTTPS
-  //       sameSite: 'none', // Ensures cross-site access if needed
-  //       path: '/', // Cookie available for the entire site
-  //       domain: 'localhost', // Ensures correct domain
-  //     });
-
-  //     return res.json({
-  //       success: true,
-  //       message: 'Login successful',
-  //       data: { uname: response.data.uname, role: response.data.role },
-  //     });
-  //   } catch (error) {
-  //     console.error('Login error:', error.message);
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: 'Internal server error',
-  //     });
-  //   }
-  // }
 
   @Post('/auth/login')
   async login(@Body() createUserDto: CreateUserDTO, @Res() res: Response) {
@@ -104,7 +69,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('/all-users')
   async getAllUsers(@Req() request) {
     const token = request.headers.authorization?.split(' ')[1];
