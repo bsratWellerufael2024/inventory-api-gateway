@@ -9,12 +9,19 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS properly for frontend
-  app.enableCors({
-    origin: 'http://localhost:5173', // Must match frontend
-    credentials: true, // Allow cookies to be sent
-    allowedHeaders: 'Content-Type, Authorization',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  });
+  // app.enableCors({
+  //   origin: 'http://localhost:5173', // Must match frontend
+  //   credentials: true, // Allow cookies to be sent
+  //   allowedHeaders: 'Content-Type, Authorization',
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  // });
+
+app.enableCors({
+  origin: 'http://localhost:5173', // Frontend URL
+  credentials: true, // Allow cookies to be sent
+  allowedHeaders: 'Content-Type, Authorization, access_token', // Allow 'access_token' header
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+});
 
   // Enable cookie parsing
   app.use(cookieParser());
