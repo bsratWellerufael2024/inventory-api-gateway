@@ -58,7 +58,6 @@ export class InventoryController {
       .toPromise();
   }
 
-
   @Get('/csv')
   async downloadCsv(
     @Res() res: Response,
@@ -76,24 +75,60 @@ export class InventoryController {
     res.send(csvData);
   }
 
+  // @Get('/pdf')
+  // async downloadPdf(
+  //   @Res() res: Response,
+  //   @Query('activatedBy') activatedBy?: string,
+  // ) {
+  //   const pdfBuffer = await this.client
+  //     .send('export_pdf', { activatedBy })
+  //     .toPromise();
+
+  //   res.setHeader('Content-Type', 'application/pdf');
+  //   res.setHeader(
+  //     'Content-Disposition',
+  //     'attachment; filename="stock_movements.pdf"',
+  //   );
+  //   res.send(pdfBuffer);
+  // }
+
   @Get('/pdf')
   async downloadPdf(
     @Res() res: Response,
     @Query('activatedBy') activatedBy?: string,
   ) {
-    const pdfBuffer = await this.client
-      .send('export_pdf', { activatedBy })
-      .toPromise();
+    try {
+      // Log incoming query and activatedBy parameter
+      console.log('Activated By:', activatedBy);
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader(
-      'Content-Disposition',
-      'attachment; filename="stock_movements.pdf"',
-    );
-    res.send(pdfBuffer);
+      // Generate PDF buffer
+      const pdfBuffer = await this.client
+        .send('export_pdf', { activatedBy })
+        .toPromise();
+
+      // Log PDF buffer details
+      if (!pdfBuffer) {
+        console.error('PDF buffer is empty or undefined');
+        return res.status(500).send('Error generating PDF.');
+      }
+
+      console.log('PDF buffer size:', pdfBuffer.length);
+
+      // Set headers for file download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="stock_movements.pdf"',
+      );
+
+      // Send the PDF buffer to the client
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Error while generating or sending PDF:', error);
+      res.status(500).send('Internal server error while generating PDF.');
+    }
   }
 
-  
   @Get('/summary')
   async getInventorySummary(
     @Query('filter') filter?: string,

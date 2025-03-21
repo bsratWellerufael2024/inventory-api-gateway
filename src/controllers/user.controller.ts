@@ -69,7 +69,7 @@ export class UsersController {
     }
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('/all-users')
   async getAllUsers(@Req() request) {
     const token = request.headers.authorization?.split(' ')[1];
