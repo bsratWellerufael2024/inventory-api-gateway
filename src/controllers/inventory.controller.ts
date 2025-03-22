@@ -129,14 +129,40 @@ export class InventoryController {
     }
   }
 
-  @Get('/summary')
-  async getInventorySummary(
-    @Query('filter') filter?: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+  @Get('inventory-summary-pdf')
+  async downloadInventorySummary(@Res({ passthrough: false }) res: Response) {
+    const bufferLikeObject = await this.client
+      .send('export_inventory_summary_pdf', {})
+      .toPromise();
+
+    const realBuffer = Buffer.from(bufferLikeObject.data); // convert back to Buffer
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="inventory-summary.pdf"',
+      'Content-Length': realBuffer.length,
+    });
+
+    res.end(realBuffer);
+  }
+
+  @Get('inventory-summary-csv')
+  async downloadInventorySummaryCSV(
+    @Res({ passthrough: false }) res: Response,
   ) {
-    console.log('Fetching inventory summary...');
-    return this.client.send('inventory.getSummary', { filter, page, limit });
+    const bufferLikeObject = await this.client
+      .send('export_inventory_summary_csv', {})
+      .toPromise();
+
+    const realBuffer = Buffer.from(bufferLikeObject.data); // extract and convert if needed
+
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="inventory-summary.csv"',
+      'Content-Length': realBuffer.length,
+    });
+
+    res.end(realBuffer); // ✅ Only send Buffer, not object
   }
 }
 
