@@ -8,6 +8,8 @@ import { AuthGuard } from "src/guards/jwt-auth.guard";
 import { Request } from "@nestjs/common";
 import { Res } from "@nestjs/common";
 import { Response } from 'express';
+import { lastValueFrom } from "rxjs";
+
 @Controller('inventory')
 export class InventoryController {
   constructor(
@@ -58,7 +60,30 @@ export class InventoryController {
       .toPromise();
   }
 
-  @Get('/csv')
+  @Get('summary')
+  async getInventorySummary(
+    @Query('filter') filter?: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    const payload = {
+      filter,
+      page: Number(page),
+      limit: Number(limit),
+    };
+
+    const result = await lastValueFrom(
+      this.client.send('inventory.getSummary', payload),
+    );
+
+    return {
+      success: true,
+      message: 'Inventory summary fetched successfully',
+      data: result,
+    };
+  }
+
+  @Get('stock-movements/csv')
   async downloadCsv(
     @Res() res: Response,
     @Query('activatedBy') activatedBy?: string,
@@ -75,58 +100,27 @@ export class InventoryController {
     res.send(csvData);
   }
 
-  // @Get('/pdf')
-  // async downloadPdf(
-  //   @Res() res: Response,
-  //   @Query('activatedBy') activatedBy?: string,
-  // ) {
-  //   const pdfBuffer = await this.client
-  //     .send('export_pdf', { activatedBy })
-  //     .toPromise();
-
-  //   res.setHeader('Content-Type', 'application/pdf');
-  //   res.setHeader(
-  //     'Content-Disposition',
-  //     'attachment; filename="stock_movements.pdf"',
-  //   );
-  //   res.send(pdfBuffer);
-  // }
-
-  @Get('/pdf')
-  async downloadPdf(
+  @Get('stock-movements/pdf')
+  async downloadStockMovementsPdf(
+    @Query('activatedBy') activatedBy: string,
     @Res() res: Response,
-    @Query('activatedBy') activatedBy?: string,
   ) {
-    try {
-      // Log incoming query and activatedBy parameter
-      console.log('Activated By:', activatedBy);
+    console.log('Activated By:', activatedBy);
 
-      // Generate PDF buffer
-      const pdfBuffer = await this.client
-        .send('export_pdf', { activatedBy })
-        .toPromise();
+    const response = await this.client
+      .send('generate-stock-movement-pdf', { activatedBy })
+      .toPromise();
 
-      // Log PDF buffer details
-      if (!pdfBuffer) {
-        console.error('PDF buffer is empty or undefined');
-        return res.status(500).send('Error generating PDF.');
-      }
+    const buffer = Buffer.from(response.pdf, 'base64');
+    console.log('PDF buffer size:', buffer.length);
 
-      console.log('PDF buffer size:', pdfBuffer.length);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=stock-movements.pdf',
+      'Content-Length': buffer.length,
+    });
 
-      // Set headers for file download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="stock_movements.pdf"',
-      );
-
-      // Send the PDF buffer to the client
-      res.send(pdfBuffer);
-    } catch (error) {
-      console.error('Error while generating or sending PDF:', error);
-      res.status(500).send('Internal server error while generating PDF.');
-    }
+    res.end(buffer); // Now this will work
   }
 
   @Get('inventory-summary-pdf')
