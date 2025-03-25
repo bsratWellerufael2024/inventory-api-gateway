@@ -36,9 +36,9 @@ export class ProductController {
     return this.client.send('get-one-product', id);
   }
   
-  @Delete('/:productName')
-  async deleteProduct(@Param('productName') productName: string) {
-    return this.client.send('product-deleted', productName);
+  @Delete('/:productId')
+  async deleteProduct(@Param('productId') productId: number) {
+    return this.client.send('product-deleted', +productId);
   }
 
   @Patch(':id')
