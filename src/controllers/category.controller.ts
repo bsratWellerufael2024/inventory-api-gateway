@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post,Put} from "@nestjs/common";
 import { ClientProxy,Client,Transport } from "@nestjs/microservices";
 import { Inject } from "@nestjs/common";
 import { CategoryDto } from "src/dto/create-category.dto";
+import { Patch } from "@nestjs/common";
 @Controller('category')
 export class CategoryController {
   constructor(
@@ -28,9 +29,16 @@ export class CategoryController {
     return this.client.send<string[]>('get_all_categories', {}).toPromise();
   }
 
-  @Put(':id')
-  async updateCategory(@Param('id') id: number, @Body('category') category: string) {
-    return this.client.send('update_category', { id, category });
+  // @Put(':id')
+  // async updateCategory(@Param('id') id: number, @Body('category') category: string) {
+  //   return this.client.send('update_category', { id, category });
+  // }
+  @Patch(':id') // <-- PATCH instead of PUT
+  async updateCategory(
+    @Param('id') id: number,
+    @Body() updateData: Partial<{ category?: string; description?: string }>,
+  ) {
+    return this.client.send('update_category', { id, updateData });
   }
 
   @Delete(':categoryId')
