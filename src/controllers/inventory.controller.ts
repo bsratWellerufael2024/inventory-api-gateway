@@ -64,7 +64,7 @@ export class InventoryController {
   async getInventorySummary(
     @Query('filter') filter?: string,
     @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @Query('limit') limit = 100,
   ) {
     const payload = {
       filter,
