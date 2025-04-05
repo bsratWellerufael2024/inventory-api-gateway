@@ -10,6 +10,8 @@ import { ProductControllerVariant } from './controllers/variant.controller';
 import { InventoryController } from './controllers/inventory.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { StockMonitorController } from './controllers/stock-monitor.controller';
+import { NotificationController } from './controllers/notification.controller';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UnitConversionController,
     ProductControllerVariant,
     InventoryController,
+    StockMonitorController,
+    NotificationController
   ],
   providers: [AppService],
 })
