@@ -40,13 +40,12 @@ export class ProductController {
   async deleteProduct(@Param('productId') productId: number) {
     return this.client.send('product-deleted', +productId);
   }
-
   @Patch(':id')
-  async updateProduct(
-    @Param('id') productId: number,
-    @Body() updateData: UpdateProductDto,
-  ) {
-    return this.client.emit("product-updated",{productId,updateData})
-  }
- 
+async updateProduct(
+  @Param('id') productId: number,
+  @Body() updateData: UpdateProductDto,
+) {
+  return this.client.send('product-updated', { productId, updateData });
+}
+
 }
