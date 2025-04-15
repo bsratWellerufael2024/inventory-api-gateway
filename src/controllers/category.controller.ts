@@ -29,10 +29,12 @@ export class CategoryController {
     return this.client.send<string[]>('get_all_categories', {}).toPromise();
   }
 
-  // @Put(':id')
-  // async updateCategory(@Param('id') id: number, @Body('category') category: string) {
-  //   return this.client.send('update_category', { id, category });
-  // }
+  @Get(':id')
+  async getCategoryById(@Param('id') id: number) {
+    return this.client.send('get_category_by_id', id).toPromise();
+  }
+
+
   @Patch(':id') // <-- PATCH instead of PUT
   async updateCategory(
     @Param('id') id: number,

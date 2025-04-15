@@ -46,7 +46,7 @@ export class InventoryController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('limit') limit: number = 100
   ) {
     return this.client
       .send('get_stock_movements', {
