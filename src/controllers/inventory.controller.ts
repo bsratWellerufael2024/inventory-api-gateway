@@ -62,27 +62,58 @@ export class InventoryController {
       .toPromise();
   }
 
+  // @Get('summary')
+  // async getInventorySummary(
+  //   @Query('filter') filter?: string,
+  //   @Query('page') page = 1,
+  //   @Query('limit') limit = 100,
+  // ) {
+  //   const payload = {
+  //     filter,
+  //     page: Number(page),
+  //     limit: Number(limit),
+  //   };
+
+  //   const result = await lastValueFrom(
+  //     this.client.send('inventory.getSummary', payload),
+  //   );
+
+  //   return {
+  //     success: true,
+  //     message: 'Inventory summary fetched successfully',
+  //     data: result,
+  //   };
+  // }
 
   @Get('summary')
   async getInventorySummary(
     @Query('filter') filter?: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 100,
+    @Query('page') page = '1',
+    @Query('limit') limit = '100',
   ) {
+    const parsedPage = parseInt(page, 10);
+    const parsedLimit = parseInt(limit, 10);
+
+    // Prepare the payload to be sent to the Inventory Service
     const payload = {
-      filter,
-      page: Number(page),
-      limit: Number(limit),
+      filter: filter?.trim() || undefined,
+      page: parsedPage > 0 ? parsedPage : 1,
+      limit: parsedLimit > 0 ? parsedLimit : 100,
     };
 
+    // Send the message to the Inventory Service via microservice
     const result = await lastValueFrom(
       this.client.send('inventory.getSummary', payload),
     );
 
+    // Ensure `yearlySummary` is present even if it’s empty
     return {
-      success: true,
-      message: 'Inventory summary fetched successfully',
-      data: result,
+      success: result.success,
+      message: result.message,
+      data: {
+        ...result.data,
+        yearlySummary: result.data.yearlySummary || [], // Ensures it's present even if empty
+      },
     };
   }
 
