@@ -45,8 +45,9 @@ export class InventoryController {
     @Query('activatedBy') activatedBy?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
+    @Query('timeRange') timeRange?: 'daily' | 'weekly' | 'monthly' | 'yearly', // ✅ Add this
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 100
+    @Query('limit') limit: number = 100,
   ) {
     return this.client
       .send('get_stock_movements', {
@@ -54,11 +55,13 @@ export class InventoryController {
         activatedBy,
         startDate,
         endDate,
+        timeRange,
         page,
         limit,
       })
       .toPromise();
   }
+
 
   @Get('summary')
   async getInventorySummary(

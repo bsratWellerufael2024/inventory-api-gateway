@@ -22,6 +22,4 @@ export class AppController {
      this.client.emit('user_created', userData); 
     return { message: 'User creation event emitted', data: userData };
   }
- 
-
 }
