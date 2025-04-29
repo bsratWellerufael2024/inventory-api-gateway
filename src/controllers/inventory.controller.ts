@@ -45,7 +45,7 @@ export class InventoryController {
     @Query('activatedBy') activatedBy?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-    @Query('timeRange') timeRange?: 'daily' | 'weekly' | 'monthly' | 'yearly', // ✅ Add this
+    @Query('timeRange') timeRange?: 'daily' | 'weekly' | 'monthly' | 'yearly',
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 100,
   ) {
@@ -61,29 +61,6 @@ export class InventoryController {
       })
       .toPromise();
   }
-
-  // @Get('summary')
-  // async getInventorySummary(
-  //   @Query('filter') filter?: string,
-  //   @Query('page') page = 1,
-  //   @Query('limit') limit = 100,
-  // ) {
-  //   const payload = {
-  //     filter,
-  //     page: Number(page),
-  //     limit: Number(limit),
-  //   };
-
-  //   const result = await lastValueFrom(
-  //     this.client.send('inventory.getSummary', payload),
-  //   );
-
-  //   return {
-  //     success: true,
-  //     message: 'Inventory summary fetched successfully',
-  //     data: result,
-  //   };
-  // }
 
   @Get('summary')
   async getInventorySummary(
@@ -101,12 +78,10 @@ export class InventoryController {
       limit: parsedLimit > 0 ? parsedLimit : 100,
     };
 
-    // Send the message to the Inventory Service via microservice
     const result = await lastValueFrom(
       this.client.send('inventory.getSummary', payload),
     );
 
-    // Ensure `yearlySummary` is present even if it’s empty
     return {
       success: result.success,
       message: result.message,

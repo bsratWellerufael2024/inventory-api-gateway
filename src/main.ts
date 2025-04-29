@@ -7,12 +7,18 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-app.enableCors({
-  origin: 'http://localhost:5173', 
-  credentials: true, 
-  allowedHeaders: 'Content-Type, Authorization, access_token',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-});
+
+ app.enableCors({
+   origin: [
+     'http://localhost:5173',
+     'http://192.168.100.99:5173', // 👈 your machine IP + port
+   ],
+   credentials: true,
+   allowedHeaders: 'Content-Type, Authorization, access_token',
+   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+ });
+
+
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
@@ -35,9 +41,11 @@ app.enableCors({
   });
 
   await app.startAllMicroservices();
-  await app.listen(3000);
+
+  // ✨ Change this line
+  await app.listen(3000, '0.0.0.0');
+
   console.log('🚀 API Gateway running on http://localhost:3000');
 }
 bootstrap();
-
 

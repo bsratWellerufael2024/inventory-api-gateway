@@ -28,44 +28,44 @@ import { NotificationController } from './controllers/notification.controller';
       }),
     }),
 
-    // // Microservices setup
-    // ClientsModule.register([
-    //   {
-    //     transport: Transport.TCP,
-    //     name: 'USERS_SERVICE',
-    //     options: {
-    //       host: '127.0.0.1',
-    //       port: 6379,
-    //     },
-    //   },
-    //   {
-    //     transport: Transport.TCP,
-    //     name: 'PRODUCT_SERVICE',
-    //     options: {
-    //       host: '127.0.0.1',
-    //       port: 6379,
-    //     },
-    //   },
-    // ]),
-
+    // Microservices setup
     ClientsModule.register([
       {
+        transport: Transport.TCP,
         name: 'USERS_SERVICE',
-        transport: Transport.REDIS,
         options: {
-          host: 'redis', // 👈 This must match the Redis container name in docker-compose.yml
+          host: '127.0.0.1',
           port: 6379,
         },
       },
       {
+        transport: Transport.TCP,
         name: 'PRODUCT_SERVICE',
-        transport: Transport.REDIS,
         options: {
-          host: 'redis', // 👈 Same here
+          host: '127.0.0.1',
           port: 6379,
         },
       },
     ]),
+
+    // ClientsModule.register([
+    //   {
+    //     name: 'USERS_SERVICE',
+    //     transport: Transport.REDIS,
+    //     options: {
+    //       host: 'redis', // 👈 This must match the Redis container name in docker-compose.yml
+    //       port: 6379,
+    //     },
+    //   },
+    //   {
+    //     name: 'PRODUCT_SERVICE',
+    //     transport: Transport.REDIS,
+    //     options: {
+    //       host: 'redis', // 👈 Same here
+    //       port: 6379,
+    //     },
+    //   },
+    // ]),
   ],
   controllers: [
     AppController,
